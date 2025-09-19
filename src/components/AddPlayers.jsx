@@ -1,4 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+// Define positions for different games. You can easily add more sports here.
+const gamePositions = {
+  'Basketball': ['Point Guard', 'Shooting Guard', 'Small Forward', 'Power Forward', 'Center'],
+  'Football': ['Goalkeeper', 'Defender', 'Midfielder', 'Forward'],
+  'Volleyball': ['Setter', 'Libero', 'Middle Blocker', 'Outside Hitter', 'Opposite Hitter'],
+  'Cricket': ['Batsman', 'Bowler', 'All-rounder', 'Wicketkeeper'],
+};
 
 // Shared style for form elements
 const inputStyle = "w-full bg-slate-900 border border-slate-600 rounded-md p-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-50";
@@ -6,11 +14,20 @@ const inputStyle = "w-full bg-slate-900 border border-slate-600 rounded-md p-3 t
 const AddPlayers = ({ settings, onPlayersComplete, onBack }) => {
   const totalPlayersNeeded = settings.numTeams * settings.playersPerTeam;
   const [players, setPlayers] = useState([]);
-  
   const [playerName, setPlayerName] = useState('');
   const [skillLevel, setSkillLevel] = useState(5);
   const [position, setPosition] = useState('Any');
   const [stamina, setStamina] = useState(2);
+
+  // Get the list of positions for the currently selected game from settings
+  // It defaults to an empty array if the game has no specific positions defined
+  const availablePositions = ['Any', ...(gamePositions[settings.sportType] || [])];
+
+  // Effect to reset the position if the user goes back and changes the game
+  useEffect(() => {
+    setPosition('Any');
+  }, [settings.sportType]);
+
 
   const handleAddPlayer = (e) => {
     e.preventDefault();
@@ -18,6 +35,7 @@ const AddPlayers = ({ settings, onPlayersComplete, onBack }) => {
       setPlayers([...players, { name: playerName, skill: parseInt(skillLevel), stamina: parseInt(stamina), position }]);
       setPlayerName('');
       setSkillLevel(5);
+      setPosition('Any'); // Reset position to 'Any' for the next player
     }
   };
 
@@ -44,10 +62,13 @@ const AddPlayers = ({ settings, onPlayersComplete, onBack }) => {
                 <option value={3}>High</option>
             </select>
         </div>
-         <div className="md:col-span-2">
+        <div className="md:col-span-2">
             <label className="block mb-2 text-sm font-semibold text-slate-400">Position</label>
             <select value={position} onChange={(e) => setPosition(e.target.value)} disabled={isAddPlayerDisabled} className={inputStyle}>
-                <option>Any</option><option>Point Guard</option><option>Shooting Guard</option><option>Small Forward</option><option>Power Forward</option><option>Center</option>
+              {/* Dynamically generate the position options based on the selected game */}
+              {availablePositions.map((pos) => (
+                <option key={pos} value={pos}>{pos}</option>
+              ))}
             </select>
         </div>
         <button type="submit" disabled={isAddPlayerDisabled} className="md:col-span-2 mt-2 bg-green-500 text-slate-900 font-bold py-3 rounded-lg hover:bg-green-600 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed">Add Player</button>
@@ -63,9 +84,9 @@ const AddPlayers = ({ settings, onPlayersComplete, onBack }) => {
       </div>
 
       <div className="flex justify-center gap-4">
-         <button className="bg-slate-600 text-slate-200 font-bold py-3 px-8 rounded-lg hover:bg-slate-700 transition-colors" onClick={onBack}>Back</button>
-         <button className="bg-cyan-400 text-slate-900 font-bold py-3 px-8 rounded-lg hover:bg-cyan-500 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed" onClick={() => onPlayersComplete(players)} disabled={players.length !== totalPlayersNeeded}>
-            Generate Teams
+        <button className="bg-slate-600 text-slate-200 font-bold py-3 px-8 rounded-lg hover:bg-slate-700 transition-colors" onClick={onBack}>Back</button>
+        <button className="bg-cyan-400 text-slate-900 font-bold py-3 px-8 rounded-lg hover:bg-cyan-500 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed" onClick={() => onPlayersComplete(players)} disabled={players.length !== totalPlayersNeeded}>
+          Generate Teams
         </button>
       </div>
     </>

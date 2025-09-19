@@ -22,6 +22,7 @@ const MatchSetup = ({ onSetupComplete }) => {
           <select className={inputStyle} value={sportType} onChange={(e) => setSportType(e.target.value)}>
             <option>Basketball</option>
             <option>Football</option>
+            <option>Volleyball</option>
             <option>Cricket</option>
             <option>Other</option>
           </select>
