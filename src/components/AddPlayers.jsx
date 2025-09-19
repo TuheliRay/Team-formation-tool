@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// Define positions for different games. You can easily add more sports here.
 const gamePositions = {
   'Basketball': ['Point Guard', 'Shooting Guard', 'Small Forward', 'Power Forward', 'Center'],
   'Football': ['Goalkeeper', 'Defender', 'Midfielder', 'Forward'],
@@ -8,7 +7,6 @@ const gamePositions = {
   'Cricket': ['Batsman', 'Bowler', 'All-rounder', 'Wicketkeeper'],
 };
 
-// Shared style for form elements
 const inputStyle = "w-full bg-slate-900 border border-slate-600 rounded-md p-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-50";
 
 const AddPlayers = ({ settings, onPlayersComplete, onBack }) => {
@@ -19,27 +17,32 @@ const AddPlayers = ({ settings, onPlayersComplete, onBack }) => {
   const [position, setPosition] = useState('Any');
   const [stamina, setStamina] = useState(2);
 
-  // Get the list of positions for the currently selected game from settings
-  // It defaults to an empty array if the game has no specific positions defined
-  const availablePositions = ['Any', ...(gamePositions[settings.sportType] || [])];
+  const sportPositions = gamePositions[settings.sportType] || [];
+  const requiresPosition = sportPositions.length > 0;
 
-  // Effect to reset the position if the user goes back and changes the game
+  const availablePositions = requiresPosition ? sportPositions : ['Any', ...sportPositions];
+
   useEffect(() => {
-    setPosition('Any');
-  }, [settings.sportType]);
-
+    setPosition(requiresPosition ? '' : 'Any');
+  }, [settings.sportType]); 
 
   const handleAddPlayer = (e) => {
     e.preventDefault();
-    if (playerName && players.length < totalPlayersNeeded) {
-      setPlayers([...players, { name: playerName, skill: parseInt(skillLevel), stamina: parseInt(stamina), position }]);
-      setPlayerName('');
-      setSkillLevel(5);
-      setPosition('Any'); // Reset position to 'Any' for the next player
-    }
+    if (!playerName || players.length >= totalPlayersNeeded) return;
+    if (requiresPosition && !position) return; 
+
+    setPlayers([...players, { 
+      name: playerName, 
+      skill: parseInt(skillLevel), 
+      stamina: parseInt(stamina), 
+      position: position || 'Any' 
+    }]);
+    setPlayerName('');
+    setSkillLevel(5);
+    setPosition(requiresPosition ? '' : 'Any'); 
   };
 
-  const isAddPlayerDisabled = players.length >= totalPlayersNeeded;
+  const isAddPlayerDisabled = players.length >= totalPlayersNeeded || !playerName.trim() || (requiresPosition && !position);
 
   return (
     <>
@@ -48,27 +51,37 @@ const AddPlayers = ({ settings, onPlayersComplete, onBack }) => {
       <form onSubmit={handleAddPlayer} className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-6 text-left">
         <div className="md:col-span-2">
           <label className="block mb-2 text-sm font-semibold text-slate-400">Player Name</label>
-          <input type="text" placeholder="e.g., Alex" value={playerName} onChange={(e) => setPlayerName(e.target.value)} disabled={isAddPlayerDisabled} className={inputStyle} />
+          <input type="text" placeholder="e.g., Alex" value={playerName} onChange={(e) => setPlayerName(e.target.value)} disabled={players.length >= totalPlayersNeeded} className={inputStyle} />
         </div>
         <div>
             <label className="block mb-2 text-sm font-semibold text-slate-400">Skill Level ({skillLevel})</label>
-            <input type="range" min="1" max="10" value={skillLevel} onChange={(e) => setSkillLevel(e.target.value)} disabled={isAddPlayerDisabled} className="w-full accent-cyan-400" />
+            <input type="range" min="1" max="10" value={skillLevel} onChange={(e) => setSkillLevel(Number(e.target.value))} disabled={players.length >= totalPlayersNeeded} className="w-full accent-cyan-400" />
         </div>
         <div>
             <label className="block mb-2 text-sm font-semibold text-slate-400">Stamina</label>
-            <select value={stamina} onChange={(e) => setStamina(e.target.value)} disabled={isAddPlayerDisabled} className={inputStyle}>
+            <select value={stamina} onChange={(e) => setStamina(Number(e.target.value))} disabled={players.length >= totalPlayersNeeded} className={inputStyle}>
                 <option value={1}>Low</option>
                 <option value={2}>Medium</option>
                 <option value={3}>High</option>
             </select>
         </div>
         <div className="md:col-span-2">
-            <label className="block mb-2 text-sm font-semibold text-slate-400">Position</label>
-            <select value={position} onChange={(e) => setPosition(e.target.value)} disabled={isAddPlayerDisabled} className={inputStyle}>
-              {/* Dynamically generate the position options based on the selected game */}
-              {availablePositions.map((pos) => (
-                <option key={pos} value={pos}>{pos}</option>
-              ))}
+            <label className="block mb-2 text-sm font-semibold text-slate-400">
+              Position {requiresPosition ? <span className="text-xs text-slate-400">(required)</span> : <span className="text-xs text-slate-400">(optional)</span>}
+            </label>
+            <select value={position} onChange={(e) => setPosition(e.target.value)} disabled={players.length >= totalPlayersNeeded} className={inputStyle}>
+              {requiresPosition ? (
+                <>
+                  <option value="">-- Select position --</option>
+                  {sportPositions.map((pos) => (
+                    <option key={pos} value={pos}>{pos}</option>
+                  ))}
+                </>
+              ) : (
+                availablePositions.map((pos) => (
+                  <option key={pos} value={pos}>{pos}</option>
+                ))
+              )}
             </select>
         </div>
         <button type="submit" disabled={isAddPlayerDisabled} className="md:col-span-2 mt-2 bg-green-500 text-slate-900 font-bold py-3 rounded-lg hover:bg-green-600 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed">Add Player</button>
@@ -79,7 +92,13 @@ const AddPlayers = ({ settings, onPlayersComplete, onBack }) => {
         {players.length === 0 ? (
           <p className="text-slate-400 text-center py-4">No players added yet.</p>
         ) : (
-          <ul className="max-h-32 overflow-y-auto pr-2">{players.map((p, i) => <li key={i} className="bg-slate-700 p-2 rounded mb-2">{p.name} (Skill: {p.skill})</li>)}</ul>
+          <ul className="max-h-32 overflow-y-auto pr-2">
+            {players.map((p, i) => (
+              <li key={i} className="bg-slate-700 p-2 rounded mb-2">
+                <span className="font-semibold text-cyan-300">{p.name}</span> | Skill: {p.skill} | Stamina: {p.stamina === 1 ? 'Low' : p.stamina === 2 ? 'Medium' : 'High'} | Position: {p.position}
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { generateTeams } from '../utils/TeamBalancer';
 const TeamDisplay = ({ players, numTeams, onBack }) => {
   const [balancedTeams, setBalancedTeams] = useState([]);
   const [fairnessScore, setFairnessScore] = useState(0);
