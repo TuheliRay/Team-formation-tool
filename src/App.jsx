@@ -55,7 +55,9 @@ function App() {
 
   return (
     <div className="bg-slate-900 text-slate-200 min-h-screen flex items-center justify-center p-4">
-      <div className="bg-slate-800 p-8 rounded-xl shadow-lg w-full max-w-3xl text-center">
+      <div className="bg-slate-800 p-8 rounded-xl shadow-lg w-full max-w-3xl text-center
+  mt-0
+  max-sm:fixed max-sm:top-0 max-sm:left-1/2 max-sm:-translate-x-1/2 max-sm:w-full max-sm:h-screen max-sm:flex max-sm:items-center max-sm:justify-center">
         {renderStep()}
       </div>
     </div>
