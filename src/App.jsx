@@ -54,7 +54,7 @@ function App() {
   };
 
   return (
-    <div className="bg-slate-900 text-slate-200 min-h-screen flex items-center justify-center p-4 max-sm:pb-6">
+    <div className="bg-slate-900 text-slate-200 min-h-screen flex items-center justify-center p-4 max-sm:pb-15">
       <div className="bg-slate-800 p-8 rounded-xl shadow-lg w-full max-w-3xl text-center mt-0 max-sm:-mt-4">
         {renderStep()}
       </div>
