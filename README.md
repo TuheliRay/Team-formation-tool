@@ -1,6 +1,6 @@
 🧩 Team Formation Tool
 
-A smart web application that helps users automatically form balanced teams based on members’ skills, preferences, and constraints. Ideal for academic projects, hackathons, or organizations wanting to streamline team creation.
+A smart web application that helps users automatically form balanced teams based on members’ skills, preferences, and constraints. Ideal for sports like Basketball , Football , VolleyBall and Cricket.
 
 🚀 Features
 
