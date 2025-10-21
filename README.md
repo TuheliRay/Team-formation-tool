@@ -1,12 +1,15 @@
-# React + Vite
+🧩 Team Formation Tool
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A smart web application that helps users automatically form balanced teams based on members’ skills, preferences, and constraints. Ideal for academic projects, hackathons, or organizations wanting to streamline team creation.
 
-Currently, two official plugins are available:
+🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+✅ Smart Team Allocation – Automatically creates balanced teams based on skills, interests, or preferences.
 
-## Expanding the ESLint configuration
+👥 Member Profiles – Store details like name, skills, interests, and experience level.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+⚙️ Custom Constraints – Set team size, skill requirements, or specific pairing rules.
+
+📊 Team Overview Dashboard – View generated teams and their composition at a glance.
+
+🌐 Responsive UI – Clean and user-friendly interface across devices.
